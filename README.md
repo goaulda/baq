@@ -76,3 +76,66 @@ Create your first JPA entity
 Easily start your REST Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+## Uruchomienie bazy danych (MariaDB) w Dockerze
+
+Projekt korzysta z kierowcy MariaDB (`quarkus-jdbc-mariadb`). Aby uruchomić bazę w kontenerze:
+
+1. Zainstaluj i uruchom Docker.
+2. W terminalu wykonaj:
+
+```bash
+docker run --name baq-db \
+  -e MARIADB_ROOT_PASSWORD=rootpass \
+  -e MARIADB_DATABASE=baq \
+  -e MARIADB_USER=baq \
+  -e MARIADB_PASSWORD=baq \
+  -p 3306:3306 \
+  -d mariadb:latest
+```
+
+3. (Opcjonalnie) W pliku `src/main/resources/application.properties` ustaw parametry połączenia:
+
+```
+quarkus.datasource.db-kind=mariadb
+quarkus.datasource.username=baq
+quarkus.datasource.password=baq
+quarkus.datasource.jdbc.url=jdbc:mariadb://localhost:3306/baq
+quarkus.hibernate-orm.database.generation=update
+```
+
+## Uruchomienie backendu (Quarkus)
+
+1. **Tryb developerski** – umożliwia live coding:
+
+```bash
+./mvnw quarkus:dev
+```
+
+(uruchamia serwer na `http://localhost:8080`)
+
+2. **Tryb produkcyjny** – zbuduj aplikację i uruchom JAR:
+
+```bash
+./mvnw package
+java -jar target/quarkus-app/quarkus-run.jar
+```
+
+## Uruchomienie frontendu (przykład projektu Node.js)
+
+1. Przejdź do katalogu frontendu:
+
+```bash
+cd frontend
+```
+
+2. Zainstaluj zależności i uruchom serwer deweloperski:
+
+```bash
+npm install
+npm start        # albo: npm run dev
+```
+
+3. Frontend zwykle nasłuchuje na `http://localhost:3000` (lub innym porcie zgodnie z konfiguracją).  
+   Upewnij się, że adresy API wskazują na działający backend (`http://localhost:8080`).
+
